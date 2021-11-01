@@ -4,12 +4,14 @@ class InputField extends StatefulWidget {
   final TextEditingController? controller;
   final bool isPassword;
   final String label;
+  final void Function(String)? onChanged;
 
   const InputField({
+    required this.label,
     Key? key,
     this.controller,
     this.isPassword = false,
-    required this.label,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -17,15 +19,18 @@ class InputField extends StatefulWidget {
 }
 
 class _InputFieldState extends State<InputField> {
+  String get _labelText => widget.label;
   TextEditingController? get _controller => widget.controller;
   bool get _isPassword => widget.isPassword;
-  String get _labelText => widget.label;
+  void Function(String)? get _onChanged => widget.onChanged;
+  
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: _controller,
       obscureText: _isPassword,
+      onChanged: _onChanged,
       decoration: InputDecoration(
         labelText: _labelText,
       ),
