@@ -18,19 +18,22 @@ class HttpAdapter implements HttpClient {
       Map<String, dynamic>? body,
   }) async {
     Response response;
+    Options? options = Options(
+      headers: headers,
+    );
 
     switch (method) {
       case HttpMethod.GET:
-        response = await dio.get(url, queryParameters: queryParameters);
+        response = await dio.get(url, queryParameters: queryParameters, options: options);
         break;
       case HttpMethod.POST:
-        response = await dio.post<Map<String, dynamic>>(url, data: body);
+        response = await dio.post<Map<String, dynamic>>(url, data: body, queryParameters: queryParameters, options: options);
         break;
       case HttpMethod.PUT:
-        response = await dio.get(url, queryParameters: queryParameters);
+        response = await dio.get(url, queryParameters: queryParameters, options: options);
         break;
       case HttpMethod.DELETE:
-        response = await dio.get(url, queryParameters: queryParameters);
+        response = await dio.get(url, queryParameters: queryParameters, options: options);
         break;
     }
 

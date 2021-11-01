@@ -24,7 +24,7 @@ class UserModel {
       authenticated: json['authenticated'],
       created: _parseStringToDateTime(json['created']),
       expiration: _parseStringToDateTime(json['expiration']),
-      accessToken: json['accessToken'],
+      accessToken: "Bearer " + json['accessToken'],
       username: json['username'],
       name: json['name'],
       message: json['message'],

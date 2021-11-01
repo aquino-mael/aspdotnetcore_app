@@ -1,5 +1,6 @@
 import '../../domain/dtos/user/user.dart';
 import '../../domain/interfaces/services/services.dart';
+import '../../ui/common/common.dart';
 import '../http/http.dart';
 
 class UserService implements IUserService {
@@ -15,6 +16,9 @@ class UserService implements IUserService {
         url + "/users",
         HttpMethod.POST,
         body: userToCreate.toMap(),
+        headers: {
+          "authorization": user!.accessToken,
+        },
       );
 
       return UserDtoCreateResult.fromJson(response);
@@ -29,9 +33,9 @@ class UserService implements IUserService {
       final response = await client.request(
         url + "/users/$id",
         HttpMethod.DELETE,
-        queryParameters: {
-          "id": id,
-        }
+        headers: {
+          "authorization": user!.accessToken,
+        },
       );
 
       return response['success'];
@@ -47,7 +51,11 @@ class UserService implements IUserService {
         url + "/users",
         HttpMethod.PUT,
         body: userToUpdate.toMap(),
+        headers: {
+          "authorization": user!.accessToken,
+        },
       );
+
       return UserDtoUpdateResult.fromJson(response);
     } catch (e) {
       throw e;
@@ -57,9 +65,15 @@ class UserService implements IUserService {
   @override
   Future<List<UserDto>> getAll() async {
     try {
-      final response = await client.request(url + "/users", HttpMethod.GET);
+      final response = await client.request(
+        url + "/users",
+        HttpMethod.GET,
+        headers: {
+          "authorization": user!.accessToken,
+        },
+      );
 
-      return [];
+      return response['data'].map<UserDto>((item) => UserDto.fromJson(item)).toList();
     } catch (e) {
       throw e;
     }
@@ -71,11 +85,14 @@ class UserService implements IUserService {
       final response = await client.request(
         url + "/$id",
         HttpMethod.GET,
+        headers: {
+          "authorization": user!.accessToken,
+        },
       );
 
-      final user = UserDto.fromJson(response);
+      final userDto = UserDto.fromJson(response);
 
-      return user;
+      return userDto;
     } catch (e) {
       throw e;
     }

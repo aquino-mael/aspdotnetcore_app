@@ -15,6 +15,6 @@ class UserDtoCreateResult {
     id: map['id'],
     name: map['name'],
     email: map['email'],
-    createdAt: map['createdAt'],
+    createdAt: DateTime.parse(map['createdAt']).toLocal(),
   );
 }
