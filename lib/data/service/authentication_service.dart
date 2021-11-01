@@ -17,9 +17,13 @@ class AuthenticationService implements IAuthenticationService {
   @override
   Future<UserEntity> login(LoginDto loginDto) async {
     try {
-      final response = await client.postAsync("$url/login", {
-        "email": loginDto.email,
-      });
+      final response = await client.request(
+        url + "/login",
+        HttpMethod.POST,
+        body: {
+          "email": loginDto.email,
+        },
+      );
 
       return UserModel.fromJson(response).toEntity();
     } catch (e) {

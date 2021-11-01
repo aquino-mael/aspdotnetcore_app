@@ -11,7 +11,12 @@ class UserService implements IUserService {
   @override
   Future<UserDtoCreateResult> createUser(UserDtoCreate userToCreate) async {
     try {
-      final response = await client.postAsync(url, userToCreate.toMap());
+      final response = await client.request(
+        url + "/users",
+        HttpMethod.POST,
+        body: userToCreate.toMap(),
+      );
+
       return UserDtoCreateResult.fromJson(response);
     } catch (e) {
       throw e;
@@ -21,8 +26,15 @@ class UserService implements IUserService {
   @override
   Future<bool> deleteUser(String id) async {
     try {
-      final response = await client.deleteAsync(url, id);
-      return response;
+      final response = await client.request(
+        url + "/users/$id",
+        HttpMethod.DELETE,
+        queryParameters: {
+          "id": id,
+        }
+      );
+
+      return response['success'];
     } catch (e) {
       throw e;
     }
@@ -31,7 +43,11 @@ class UserService implements IUserService {
   @override
   Future<UserDtoUpdateResult> updateUser(UserDtoUpdate userToUpdate) async {
     try {
-      final response = await client.putAsync(url, userToUpdate.toMap());
+      final response = await client.request(
+        url + "/users",
+        HttpMethod.PUT,
+        body: userToUpdate.toMap(),
+      );
       return UserDtoUpdateResult.fromJson(response);
     } catch (e) {
       throw e;
@@ -41,11 +57,9 @@ class UserService implements IUserService {
   @override
   Future<List<UserDto>> getAll() async {
     try {
-      final response = await client.getAsync(url);
+      final response = await client.request(url + "/users", HttpMethod.GET);
 
-      final users = <UserDto>[];
-
-      return users;
+      return [];
     } catch (e) {
       throw e;
     }
@@ -54,7 +68,10 @@ class UserService implements IUserService {
   @override
   Future<UserDto> getUser(String id) async {
     try {
-      final response = await client.getAsync(url, queryParameters: {"id": id});
+      final response = await client.request(
+        url + "/$id",
+        HttpMethod.GET,
+      );
 
       final user = UserDto.fromJson(response);
 
