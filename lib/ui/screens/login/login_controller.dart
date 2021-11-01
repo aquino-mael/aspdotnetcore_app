@@ -2,8 +2,10 @@
 import '../../../domain/dtos/login/login.dart';
 import '../../../domain/interfaces/services/services.dart';
 import '../../common/common.dart';
+import '../../mixin/mixin.dart';
+import '../home/home.dart';
 
-class LoginController {
+class LoginController with NavigatorManager {
   final IAuthenticationService service;
 
   LoginController(this.service);
@@ -19,6 +21,11 @@ class LoginController {
       );
 
       user = loginResult;
+
+      return navigateTo(
+        HomeScreen.routeName,
+        removeOldRoutes: true,
+      );
     } catch (e) {
       throw e;
     }
