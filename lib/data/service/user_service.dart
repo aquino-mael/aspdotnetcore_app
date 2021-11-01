@@ -6,7 +6,7 @@ class UserService implements IUserService {
   final HttpClient client;
   final String url;
 
-  UserService(this.client, this.url);
+  UserService({required this.client, required this.url});
 
   @override
   Future<UserDtoCreateResult> createUser(UserDtoCreate userToCreate) async {

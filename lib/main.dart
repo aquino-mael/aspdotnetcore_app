@@ -6,11 +6,6 @@ import 'ui/widget/widget.dart';
 
 void main() {
   runApp(
-    AspDotNetCoreApp(
-      authenticationService: AuthenticationService(
-        client: kHttpClient,
-        url: kUrl,
-      ),
-    )
+    AspDotNetCoreApp()
   );
 }
