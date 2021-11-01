@@ -6,4 +6,9 @@ class UserDtoCreate {
     required this.name,
     required this.email,
   });
+
+  Map<String, dynamic> toMap() => {
+    "name": name,
+    "email": email,
+  };
 }
