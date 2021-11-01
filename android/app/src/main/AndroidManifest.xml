@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aspnetcore_app">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
    <application
         android:label="aspnetcore_app"
         android:icon="@mipmap/ic_launcher">
