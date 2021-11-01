@@ -1,16 +1,19 @@
-import 'base_entity.dart';
-
-class UserEntity extends BaseEntity {
+class UserEntity {
+  bool authenticated;
+  DateTime created;
+  DateTime expiration;
   String accessToken;
+  String username;
   String name;
-  String email;
+  String message;
 
   UserEntity({
-    required String? id,
-    required DateTime? createdAt,
-    required DateTime? updatedAt,
+    required this.authenticated,
+    required this.created,
+    required this.expiration,
     required this.accessToken,
+    required this.username,
     required this.name,
-    required this.email,
-  }) : super(id, createdAt, updatedAt);
+    required this.message,
+  });
 }

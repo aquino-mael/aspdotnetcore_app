@@ -1,5 +1,6 @@
 import '../../dtos/login/login.dart';
+import '../../entities/entities.dart';
 
 abstract class IAuthenticationService {
-  Future<void> login(LoginDto email);
+  Future<UserEntity> login(LoginDto email);
 }
