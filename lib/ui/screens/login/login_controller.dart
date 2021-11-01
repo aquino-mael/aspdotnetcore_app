@@ -1,6 +1,7 @@
+
 import '../../../domain/dtos/login/login.dart';
-import '../../../domain/entities/entities.dart';
 import '../../../domain/interfaces/services/services.dart';
+import '../../common/common.dart';
 
 class LoginController {
   final IAuthenticationService service;
@@ -17,13 +18,9 @@ class LoginController {
         ),
       );
 
-      _saveEntity(loginResult);
+      user = loginResult;
     } catch (e) {
       throw e;
     }
-  }
-
-  void _saveEntity(UserEntity entity) {
-
   }
 }
