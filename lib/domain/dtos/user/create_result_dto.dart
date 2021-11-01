@@ -10,4 +10,11 @@ class UserDtoCreateResult {
     required this.email,
     required this.createdAt,
   });
+
+  factory UserDtoCreateResult.fromJson(Map map) => UserDtoCreateResult(
+    id: map['id'],
+    name: map['name'],
+    email: map['email'],
+    createdAt: map['createdAt'],
+  );
 }

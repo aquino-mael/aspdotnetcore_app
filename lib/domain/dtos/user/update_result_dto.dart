@@ -10,4 +10,11 @@ class UserDtoUpdateResult {
     required this.email,
     required this.updatedAt,
   });
+
+  factory UserDtoUpdateResult.fromJson(Map map) => UserDtoUpdateResult(
+    id: map['id'],
+    name: map['name'],
+    email: map['email'],
+    updatedAt: map['updatedAt'],
+  );
 }
