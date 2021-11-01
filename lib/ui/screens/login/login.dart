@@ -1,15 +1,14 @@
-import 'package:aspnetcore_app/domain/dtos/login/login_dto.dart';
 import 'package:flutter/material.dart';
 
-import '../../../domain/interfaces/services/services.dart';
 import '../../widget/widget.dart';
+import 'login_controller.dart';
 
 class LoginScreen extends StatelessWidget {
-  final IAuthenticationService authenticationService;
+  final LoginController loginController;
   
   LoginScreen({
     Key? key,
-    required this.authenticationService,
+    required this.loginController,
   }) : super(key: key);
 
   final TextEditingController _emailInputController = TextEditingController();
@@ -44,18 +43,15 @@ class LoginScreen extends StatelessWidget {
                     InputField(
                       label: "E-mail",
                       controller: _emailInputController,
+                      onChanged: (value) {
+                        loginController.email = value;
+                      }
                     ),
                     SizedBox(
                       height: 32.0,
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        authenticationService.login(
-                          LoginDto(
-                            email: _emailInputController.text,
-                          ),
-                        );
-                      },
+                      onPressed: loginController.auth,
                       child: Text("Go"),
                     ),
                   ],

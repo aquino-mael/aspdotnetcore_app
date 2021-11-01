@@ -1,3 +1,5 @@
+import 'package:aspnetcore_app/ui/screens/login/login_controller.dart';
+
 import '../../domain/interfaces/services/services.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +16,9 @@ class AspDotNetCoreApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginScreen(
-        authenticationService: authenticationService,
+        loginController: LoginController(
+          authenticationService
+        ),
       ),
     );
   }
