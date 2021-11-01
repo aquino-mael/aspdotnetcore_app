@@ -1,8 +1,18 @@
-import 'package:aspnetcore_app/ui/widget/widget.dart';
+import 'package:aspnetcore_app/domain/dtos/login/login_dto.dart';
 import 'package:flutter/material.dart';
 
+import '../../../domain/interfaces/services/services.dart';
+import '../../widget/widget.dart';
+
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({ Key? key }) : super(key: key);
+  final IAuthenticationService authenticationService;
+  
+  LoginScreen({
+    Key? key,
+    required this.authenticationService,
+  }) : super(key: key);
+
+  final TextEditingController _emailInputController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +43,19 @@ class LoginScreen extends StatelessWidget {
                     ),
                     InputField(
                       label: "E-mail",
+                      controller: _emailInputController,
                     ),
                     SizedBox(
                       height: 32.0,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        authenticationService.login(
+                          LoginDto(
+                            email: _emailInputController.text,
+                          ),
+                        );
+                      },
                       child: Text("Go"),
                     ),
                   ],
