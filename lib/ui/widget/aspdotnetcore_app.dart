@@ -1,25 +1,38 @@
-import 'package:aspnetcore_app/ui/screens/login/login_controller.dart';
-
-import '../../domain/interfaces/services/services.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/service/authentication_service.dart';
+import '../../data/service/user_service.dart';
+import '../common/common.dart';
+import '../screens/login/login_controller.dart';
 import '../screens/screens.dart';
 
 class AspDotNetCoreApp extends StatelessWidget {
-  final IAuthenticationService authenticationService;
 
-  const AspDotNetCoreApp({
-    required this.authenticationService,
-  });
+  const AspDotNetCoreApp();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LoginScreen(
-        loginController: LoginController(
-          authenticationService
+      navigatorKey: RouterNavigator.navigatorKey,
+      initialRoute: LoginScreen.routeName,
+      routes: {
+        LoginScreen.routeName: (context) => LoginScreen(
+          loginController: LoginController(
+            AuthenticationService(
+              client: kHttpClient,
+              url: kUrl,
+            ),
+          ),
         ),
-      ),
+        HomeScreen.routeName: (context) => HomeScreen(
+          controller: HomeController(
+            UserService(
+              client: kHttpClient,
+              url: kUrl,
+            )
+          ),
+        ),
+      },
     );
   }
 }
