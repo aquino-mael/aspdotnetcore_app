@@ -15,6 +15,6 @@ class UserDtoUpdateResult {
     id: map['id'],
     name: map['name'],
     email: map['email'],
-    updatedAt: map['updatedAt'],
+    updatedAt: DateTime.parse(map['updatedAt']).toLocal(),
   );
 }
