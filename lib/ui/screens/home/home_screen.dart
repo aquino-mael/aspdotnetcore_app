@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../domain/dtos/user/user.dart';
+import '../../common/common.dart';
+import '../../widget/widget.dart';
+import '../screens.dart';
 import 'home_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -30,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(user!.name),
         actions: [
           IconButton(
             icon: Icon(
@@ -42,18 +46,46 @@ class _HomeScreenState extends State<HomeScreen> {
               Icons.person_add_alt_1
             ),
             onPressed: () async {
-              _controller.registerUser(
-                UserDtoCreate(
-                  email: "ismael@hotmail.com",
-                  name: "Ismael Aquino Teste",
+              Map<String, dynamic> newUser = await _openDialogToAddUser();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Adicionando novo usuário..."),
                 )
+              );
+
+              await _controller.registerUser(
+                UserDtoCreate(
+                  email: newUser["email"]!,
+                  name: newUser["name"]!,
+                )
+              );
+
+              await _controller.getAllUsers();
+
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Novo usuário criado com sucesso!"),
+                )
+              );
+            },
+          ),
+
+          IconButton(
+            icon: Icon(
+              Icons.logout,
+            ),
+            onPressed: () async {
+              RouterNavigator.getInstance().navigateAndRemoveTo(
+                LoginScreen.routeName
               );
             },
           ),
         ],
       ),
       body: StreamBuilder<List<UserDto>>(
-        stream: _controller.users.stream,
+        stream: _controller.usersStreamController.stream,
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -71,6 +103,114 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListTile(
       title: Text(user.name),
       subtitle: Text(user.email),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.edit,
+            ),
+            onPressed: () async {
+              Map<String, dynamic> edited = await _openDialogToAddUser(user.name, user.email);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Atualizando usuário..."),
+                )
+              );
+              
+              await _controller.updateUser(
+                UserDtoUpdate(
+                  id: user.id,
+                  email: edited["email"],
+                  name: edited["name"],
+                )
+              );
+
+              await _controller.getAllUsers();
+
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Usuário atualizado com sucesso!"),
+                )
+              );
+            }
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.red,
+            ),
+            onPressed: () async {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Deletando ${user.name}..."),
+                )
+              );
+
+              var deleted = await _controller.deleteUser(user.id);
+
+              ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+              if(deleted) {
+                await _controller.getAllUsers();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("${user.name} Deletado!"),
+                  )
+                );
+              }
+              else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Falha ao deletar ${user.name}."),
+                  )
+                );
+              }
+            }
+          ),
+        ],
+      ),
     );
+  }
+
+  Future<Map<String, String?>> _openDialogToAddUser([String? name, String? email]) async {
+    Map<String, String?> newUser = {
+      "email": email,
+      "name": name,
+    };
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Padding(
+          padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InputField(
+                  label: "Email",
+                  initialValue: email,
+                  onChanged: (value) {
+                    newUser["email"] = value;
+                  },
+                ),
+                InputField(
+                  label: "Name",
+                  initialValue: name,
+                  onChanged: (value) {
+                    newUser["name"] = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    return newUser;
   }
 }
