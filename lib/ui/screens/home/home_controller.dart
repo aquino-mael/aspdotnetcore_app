@@ -8,16 +8,51 @@ class HomeController {
 
   HomeController(this.userService);
 
-  StreamController<List<UserDto>> users = StreamController<List<UserDto>>();
+  StreamController<List<UserDto>> usersStreamController = StreamController<List<UserDto>>();
+
+  List<UserDto> users = <UserDto>[];
 
   Future<void> getAllUsers() async {
-    final allUsers = await userService.getAll();
-    users.add(allUsers);
+    users = await userService.getAll();
+    usersStreamController.add(users);
   }
 
   Future<void> registerUser(UserDtoCreate user) async {
-    await userService.createUser(user);
+    final createResult = await userService.createUser(user);
 
-    getAllUsers();
+    users.add(
+      UserDto(
+        id: createResult.id,
+        name: createResult.name,
+        email: createResult.email,
+        createdAt: createResult.createdAt,
+      ),
+    );
+  }
+
+  Future<void> updateUser(UserDtoUpdate user) async {
+    final createResult = await userService.updateUser(user);
+
+    var currentUser = users.firstWhere((element) => element.id == user.id);
+
+    users.removeWhere((element) => element.id == currentUser.id);
+
+    users.add(
+      UserDto(
+        id: createResult.id,
+        name: createResult.name,
+        email: createResult.email,
+        createdAt: currentUser.createdAt,
+      ),
+    );
+  }
+
+  Future<bool> deleteUser(String id) async {
+    final deleteResult = await userService.deleteUser(id);
+
+    if(deleteResult)
+      users.removeWhere((element) => element.id == id);
+
+    return deleteResult;
   }
 }
