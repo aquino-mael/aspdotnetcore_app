@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../domain/dtos/user/user.dart';
 import '../../common/common.dart';
+import '../../mixin/mixin.dart';
 import '../../widget/widget.dart';
 import '../screens.dart';
 import 'home_controller.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with NavigatorManager {
   HomeController get _controller => widget.controller;
 
   @override
@@ -33,7 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(user!.name),
+        title: Text(
+          user!.name
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -77,8 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Icons.logout,
             ),
             onPressed: () async {
-              RouterNavigator.getInstance().navigateAndRemoveTo(
-                LoginScreen.routeName
+              navigateTo(
+                LoginScreen.routeName,
+                removeOldRoutes: true,
               );
             },
           ),
@@ -101,8 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildUsersList(UserDto user) {
     return ListTile(
-      title: Text(user.name),
-      subtitle: Text(user.email),
+      title: Text(
+        user.name
+      ),
+      subtitle: Text(
+        user.email
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -111,7 +119,11 @@ class _HomeScreenState extends State<HomeScreen> {
               Icons.edit,
             ),
             onPressed: () async {
-              Map<String, dynamic> edited = await _openDialogToAddUser(user.name, user.email);
+              Map<String, dynamic> edited = await _openDialogToAddUser(
+                "Atualizar usuário",
+                user.name,
+                user.email
+              );
 
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -175,8 +187,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<Map<String, String?>> _openDialogToAddUser([String? name, String? email]) async {
-    Map<String, String?> newUser = {
+  Future<Map<String, String?>> _openDialogToAddUser([
+    String title = "Adicionar usuário",
+    String? name,
+    String? email,
+  ]) async {
+    Map<String, String?> userInfos = {
       "email": email,
       "name": name,
     };
@@ -190,18 +206,25 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
                 InputField(
                   label: "Email",
                   initialValue: email,
                   onChanged: (value) {
-                    newUser["email"] = value;
+                    userInfos["email"] = value;
                   },
                 ),
                 InputField(
                   label: "Name",
                   initialValue: name,
                   onChanged: (value) {
-                    newUser["name"] = value;
+                    userInfos["name"] = value;
                   },
                 ),
               ],
@@ -211,6 +234,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
 
-    return newUser;
+    return userInfos;
   }
 }

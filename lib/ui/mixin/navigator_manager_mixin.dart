@@ -1,4 +1,4 @@
-import 'package:aspnetcore_app/ui/common/route/route.dart';
+import '../common/route/route.dart';
 
 mixin NavigatorManager {
   RouterNavigator _navigatorManager = RouterNavigator.getInstance();
