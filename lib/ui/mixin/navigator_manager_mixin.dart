@@ -1,4 +1,5 @@
 import '../common/route/route.dart';
+import '../screens/screens.dart';
 
 mixin NavigatorManager {
   RouterNavigator _navigatorManager = RouterNavigator.getInstance();
@@ -9,5 +10,9 @@ mixin NavigatorManager {
     } else {
       _navigatorManager.navigateTo(routeName);
     }
+  }
+
+  void logout() {
+    return navigateTo(LoginScreen.routeName, removeOldRoutes: true);
   }
 }

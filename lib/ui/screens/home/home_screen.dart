@@ -80,10 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with NavigatorManager {
               Icons.logout,
             ),
             onPressed: () async {
-              navigateTo(
-                LoginScreen.routeName,
-                removeOldRoutes: true,
-              );
+              return logout();
             },
           ),
         ],
@@ -103,13 +100,13 @@ class _HomeScreenState extends State<HomeScreen> with NavigatorManager {
     );
   }
 
-  Widget _buildUsersList(UserDto user) {
+  Widget _buildUsersList(UserDto userDto) {
     return ListTile(
       title: Text(
-        user.name
+        userDto.name
       ),
       subtitle: Text(
-        user.email
+        userDto.email
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -121,8 +118,8 @@ class _HomeScreenState extends State<HomeScreen> with NavigatorManager {
             onPressed: () async {
               Map<String, dynamic> edited = await _openDialogToAddUser(
                 "Atualizar usuário",
-                user.name,
-                user.email
+                userDto.name,
+                userDto.email
               );
 
               ScaffoldMessenger.of(context).showSnackBar(
@@ -133,11 +130,15 @@ class _HomeScreenState extends State<HomeScreen> with NavigatorManager {
               
               await _controller.updateUser(
                 UserDtoUpdate(
-                  id: user.id,
+                  id: userDto.id,
                   email: edited["email"],
                   name: edited["name"],
                 )
               );
+
+              if(userDto.name == user!.name) {
+                return logout();
+              }
 
               await _controller.getAllUsers();
 
@@ -157,11 +158,11 @@ class _HomeScreenState extends State<HomeScreen> with NavigatorManager {
             onPressed: () async {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Deletando ${user.name}..."),
+                  content: Text("Deletando ${userDto.name}..."),
                 )
               );
 
-              var deleted = await _controller.deleteUser(user.id);
+              var deleted = await _controller.deleteUser(userDto.id);
 
               ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
@@ -169,14 +170,14 @@ class _HomeScreenState extends State<HomeScreen> with NavigatorManager {
                 await _controller.getAllUsers();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("${user.name} Deletado!"),
+                    content: Text("${userDto.name} Deletado!"),
                   )
                 );
               }
               else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("Falha ao deletar ${user.name}."),
+                    content: Text("Falha ao deletar ${userDto.name}."),
                   )
                 );
               }
